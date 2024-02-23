@@ -39,8 +39,6 @@ def predict_model(encoded):
 
 app=Flask(__name__)
 
-app.config['UPLOAD_FOLDER'] = 'app\static\images'
-
 @app.route('/')
 def home():
     return render_template('index.html',title='Home')
@@ -65,4 +63,4 @@ def predict():
 
 
 if __name__=='__main__':
-    app.run(debug=True,port=5002)
+    app.run(port=5002)
