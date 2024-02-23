@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+
+{%block ourpage%}
+
+<h1 align="center">Plant Pathology Classification</h1>
+
+<form class="p-3 text-center" action='/', method="post" enctype="multipart/form-data">
+    <input class="form-control" type="file" name="imagefile" >
+    <input class="btn btn-primary mt-3"type="submit" value="Predict Image" >
+</form>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{%block ourpage%}
+<!-- Container div to hold the image -->
+<div class="image-container">
+    <!-- Image tag to insert the photo -->
+    <h2 align="center">Your Plant is/has: <br>
+        {{result}}
+        <br>
+         with a percentage of:
+         <br>
+        {{percentage}}%
+    </h2>
+</div>
+<div>
+    <img src="{{ img_path }}" alt="Uploaded Image">
+</div>
+{% endblock %}
