@@ -1,7 +1,8 @@
 from flask import Flask,render_template,request
 import numpy as np
-import os
 import tensorflow as tf
+import base64
+import os
 
 model_path = os.path.join(os.path.dirname(__file__), 'static', 'quantized_model.tflite')
 interpreter = tf.lite.Interpreter(model_path=model_path)
@@ -11,10 +12,11 @@ input_details = interpreter.get_input_details()
 
 class_names=['Healthy','Multiple Diseases','Rust','Scab']
 
-def predict_model(image_path):
-    # Read and decode the image from the file path
-    bits = tf.io.read_file(image_path)
-    image = tf.io.decode_jpeg(bits, channels=3)
+def predict_model(encoded):
+
+    image_data = base64.b64decode(encoded)
+
+    image = tf.io.decode_jpeg(image_data, channels=3)
     
     # Convert image to float32 and normalize pixel values
     image = tf.cast(image, tf.float32) / 255.0
@@ -37,6 +39,8 @@ def predict_model(image_path):
 
 app=Flask(__name__)
 
+app.config['UPLOAD_FOLDER'] = 'app\static\images'
+
 @app.route('/')
 def home():
     return render_template('index.html',title='Home')
@@ -49,12 +53,13 @@ def about():
 def predict():
 
     img = request.files['imagefile']
-    path=os.path.join(os.path.dirname(__file__), 'static/images', img.filename)
-    img.save(path)
+    image_data = img.read()
+    encoded_image = base64.b64encode(image_data).decode('utf-8')
 
-    classification=predict_model(path)
+    classification=predict_model(encoded_image)
+
     
-    return render_template('result.html',result=classification[0],percentage=classification[1],img_path='static\\images\\'+img.filename)
+    return render_template('result.html',result=classification[0],percentage=classification[1],image_data=encoded_image)
 
 
 
